@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MovieAPI.DTOs;
 using MovieAPI.Entities;
 using MovieAPI.Filters;
 using MovieAPI.Services;
@@ -12,19 +15,26 @@ namespace MovieAPI.Controllers
     {
         //private readonly IRepository repository;
         private readonly ILogger<GenresController> logger;
-        public GenresController(IRepository reposiory, ILogger<GenresController> logger)
+        private readonly ApplicationDBContext dBContext;
+        private readonly IMapper mapper;
+
+        public GenresController(ILogger<GenresController> logger,ApplicationDBContext dBContext,
+            IMapper mapper)
         {
             //this.repository = reposiory;
             this.logger = logger;
+            this.dBContext = dBContext;
+            this.mapper = mapper;
         }
         [HttpGet]
         [HttpGet("list")]
         [HttpGet("/allgenres")]
         //[ServiceFilter(typeof(MyActionFilter))]
-        public async Task<ActionResult<List<Genre>>> Get()
+        public async Task<ActionResult<List<GenreDTO>>> Get()
         {
             logger.LogInformation("Getting all the genres.");
-            return  new List<Genre>(){ new Genre { Id = 1, Name = "Action" } };
+            var genres= await dBContext.Genres.ToListAsync();
+            return mapper.Map<List<GenreDTO>>(genres);
         }
         [HttpGet("{Id:int}/{par1=Dee}")]
         public ActionResult<Genre> Get(int Id, string par1)
@@ -41,9 +51,11 @@ namespace MovieAPI.Controllers
             throw new NotImplementedException();
         }
         [HttpPost]
-        public ActionResult Post([FromBody] Genre genre)
+        public async Task<ActionResult> Post([FromBody] GenreCreationDTO genreCreationDTO)
         {
-            
+            var genre=mapper.Map<Genre>(genreCreationDTO);
+            dBContext.Add(genre);
+            await dBContext.SaveChangesAsync();
             return NoContent();
         }
         [HttpPut]

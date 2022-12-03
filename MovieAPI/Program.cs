@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using MovieAPI;
 using MovieAPI.Filters;
@@ -26,7 +27,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(
                                .AllowAnyHeader()
                                .AllowAnyMethod();
        }));
-
+builder.Services.AddAutoMapper(typeof(Program).Assembly); // Since there is no Startup file
 
 
 

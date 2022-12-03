@@ -5,7 +5,6 @@ namespace MovieAPI.Entities
 {
     public class Genre//: IValidatableObject
     {
-        internal string name;
 
         public int Id { get; set; }
         [Required(ErrorMessage ="The field with name {0} is required.")]
