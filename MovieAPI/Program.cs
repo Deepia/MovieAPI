@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieAPI;
 using MovieAPI.Filters;
+using MovieAPI.Helpers;
 using MovieAPI.Services;
 using System.Configuration;
 
@@ -11,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IFileStorageService, InAppStorageService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(typeof(MyExceptionFilter));

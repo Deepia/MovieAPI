@@ -36,18 +36,16 @@ namespace MovieAPI.Controllers
             var genres= await dBContext.Genres.ToListAsync();
             return mapper.Map<List<GenreDTO>>(genres);
         }
-        [HttpGet("{Id:int}/{par1=Dee}")]
-        public ActionResult<Genre> Get(int Id, string par1)
+        [HttpGet("{Id:int}", Name ="getGenre")]
+        public async Task<ActionResult<GenreDTO>> Get(int Id)
         {
-            //var genre = repository.GetGenreById(Id);
-            //if(genre == null)
-            //{
-            //    logger.LogWarning($"Genre with Id {Id} not found");
-            //    throw new ApplicationException();
-            //    return NotFound();
-
-            //}
-            //return genre;
+            var genre = await dBContext.Genres.FirstOrDefaultAsync(x=>x.Id == Id);
+            if(genre == null)
+            {
+                return NotFound();
+            }
+            return mapper.Map<GenreDTO>(genre);
+            
             throw new NotImplementedException();
         }
         [HttpPost]
@@ -58,14 +56,25 @@ namespace MovieAPI.Controllers
             await dBContext.SaveChangesAsync();
             return NoContent();
         }
-        [HttpPut]
-        public ActionResult Put()
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id,[FromBody] GenreCreationDTO genreCreationDTO)
         {
+            var genre= mapper.Map<Genre>(genreCreationDTO);
+            genre.Id = id;
+            dBContext.Entry(genre).State= EntityState.Modified;
+            await dBContext.SaveChangesAsync();
             return NoContent();
         }
-        [HttpDelete]
-        public ActionResult Delete()
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
+            var genres = await dBContext.Genres.FirstOrDefaultAsync(x => x.Id == id);
+            if(genres == null)
+            {
+                return NotFound();
+            }
+            dBContext.Remove(genres);
+            await dBContext.SaveChangesAsync();
             return NoContent();
         }
     }
