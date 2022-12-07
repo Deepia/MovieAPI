@@ -12,7 +12,8 @@ namespace MovieAPI.Helpers
             {
                 throw new ArgumentNullException(nameof(httpContext));
             }
-            double count = await queryable.CountAsync();
+            double count = await queryable.CountAsync(); 
+            
             httpContext.Response.Headers.Add("totalAmountofRecords", count.ToString());
         }
     }

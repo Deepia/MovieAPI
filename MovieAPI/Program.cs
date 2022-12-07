@@ -27,9 +27,9 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(
        {
            //var settings = Configuration.GetValue("http://localhost:4200").Get();
            builder.WithOrigins("http://localhost:4200")
-                               .AllowAnyHeader()
-                               .AllowAnyMethod().
-                               WithExposedHeaders(new string[] { "totalAmontOfRecords" });
+                               .AllowAnyMethod()
+                               .AllowAnyHeader().
+                               WithExposedHeaders(new string[] { "totalAmountOfRecords" });
        }));
 builder.Services.AddAutoMapper(typeof(Program).Assembly); // Since there is no Startup file
 
